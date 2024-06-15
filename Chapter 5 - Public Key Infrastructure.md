@@ -1,0 +1,58 @@
+Public Key Infrastructure is the system of being able to send parties the necessary public encryption keys while also ensuring that the other party is who they say they are (authentication).
+- Central Certificate Authority: PKI incorporates a central Certificate Authority to provide trusted authentication.
+	- Provide certificate services for users
+	- Ensure validity of certificates and identities
+	- Establish trust
+	- Manage servers that store and administer certificates
+	- Perform key and certificate lifecycle management, revoke invalid or expired certificates
+- Creates Trust Model for users and different authorities to trust each other
+	- Single Certificate Authority: Single system
+	- Hierarchical: A parent CA issues certificates to child certificates who may use different policies, but are in line with the parent CA. Creates a chain of trust because you know you can trust the child authority, and by extension the parent authority.
+		- Sometimes the parent or root CA is kept offline or airgapped to prevent compromise, only onlining when necessary.
+- Certification lifecycle:
+	- Registration - device completes a certificate signing request and submits it to the CA. Includes information that the device wants to use in the certificate, ie public key. The CA then verifies that the data is valid.
+		- The registration process might be delegated to a registration authority, who checks identies and submits requests but does not grant certificates.
+	- Certificate is granted
+		- Acts as a wrapper for the user's public key, containing the key and information about the issuer (think co-signed lease).
+		- Standards based off X.509 standard by International Telecommunications Union and Internet Engineering Taskforce. RSA also has standards, the Public Key Cryptography Standards.
+		- Certificates usually include :
+			- Serial number
+			- Signature Algorithm
+			- Issuer
+			- Valid to/Expiration date
+			- Subject - cert holder
+			- Public Key - key used by cert holder
+			- Extensions - basically a notes section
+				- Some extensions can be marked as critical - reject if unable to read or interpret
+			- Subject Alternative Name
+		- Certificate Types:
+			- Domain Validation: proves ownership of a domain (this site is who they say they are/email is correct)
+			- Extended Validation: checks legal identity and control
+			- Machine/Computer Certificates: Device is who they say they are for networks. Useful for network devices.
+			- Email/User Certificate: Email encryption
+			- Code Signing Certificate: Code is published by a legitimate developer and guaranteed to be valid.
+			- Root Certificate: Identifies the Certificate Authority
+			- Self-signed Certificate: Trust me bro.
+	- Certificate is stored: certificate data must be stored securely while in use
+		- Certificate Status can be pulled from the issuer using Online Certificate Status Protocol (OCSP) to the associated server. The server (aka OCSP responder) returns the status of the requested certificate rather than the whole list.
+		- Status can also be pulled from a webserver that stores a timestamped image of the certificate (OCSP stapling). This is typically a faster and less risky method.
+		- Certificate data may also be embedded into message data to ensure that the certificate is correct. This is known as pinning (aka pinning to a specific document or board).
+	- Certificate is revoked: if the private key associated with a certificate is compromised it should be revoked
+		- Revoked Certificates are no longer valid and cannot be reactivated. Lists of revoked certificates are maintained by CAs to prevent reuse by hostile actors or accidentally reactivating them on a Certificate Revocation List (CRL). CRLs have the following attributes:
+			- Publish period (version): Date and time that the list was published
+			- Distribution Point(s): list to who the list is sent to
+			- Validity period: how long this list is considered a source of truth
+			- Signature: ensures authenticity
+		- Certificates may be suspended instead
+	- Certificate is renewed after expiration: Keys should expire after a period of time, thus ensuring that keys are not "forever" valid. Once expired, keys should be renewed automatically as long as required.
+- Root CA private keys are incredibly valuable and should be subject to extremely high standards. Access should be logged and subject to M of N control (to access the key, of the N permitted persons, M of them should be present to show credentials. Nuke key system).
+	- If a key is damaged or lost, backups are required. Backups are risks however, so they are kept in independent secure storages AKA escrow (think airgapped passive storage device in a bank vault off the main site).
+Certificate files are formatted for transmission.
+- Encoding: Cryptographic data is processed as binary using Distinguished Encoding Rules. The binary is represented to people as ASCII text using Base64 Privacy-enhanced Electronic Mail Encoding (PEM). This usually starts with a header of `---BEGIN CERTIFICATE---`
+- File Extensions: `.DER`, `.PEM` can be used, but are not universally recognized. `.DER` is used for Windows, `.PEM` is used by Linux. `.CRT` and `.CER` are also used, but not well-standardized.
+- Contents may include more than one certificate
+	- `PKCS #12` is a private key  certificate format that is password protected and always binary. Extension for Windows is `.pfx` and Mac `.p12`
+	- P7B uses PKCS #7 and is saved as ASCII. This is used to deliver chains of certificates that must be trusted beforehand. `.PEM`
+CA servers typically use OpenSSL or Active Directory Certificate Services depending on OS.
+- Windows uses Active Directory
+- Linux/Mac uses OpenSSL

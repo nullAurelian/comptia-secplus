@@ -1,0 +1,68 @@
+Assessment/Recon tools
+<h1>Commands</h1>
+- Topology recon (footprinting) to find network address ranges, structure and routes
+	- `ipconfig`
+	- `ifconfig`
+	- `ping`
+	- `arp`
+- Routing
+	- `route`
+	- `traceroute`/`tracert`
+	- `mtr`/`pathping`
+- Network scanners can find open ports, or identify what services are in use on a network that can be used as a potential cover.
+	- `nmap`
+		- Check for TCP responses
+		- Check for UDP responses
+	- `netstat`
+	- `nslookup`/`dig`
+- Packet capture and replay
+	- `tcpdump`
+	- Wireshark
+	- `tcpreplay`
+<h1>Vulnerabilities and Patch Management</h1>
+- Focus on OS and Firmware
+- Pay attention for day-zero (ie vulnerabilities that are not previously discovered)
+- Do Not:
+	- Use Defaults
+	- Have unsecured root
+	- Have Open permissions
+	- Leave open ports or services
+	- Use unsecured protocols
+	- Use weak encryption
+	- Leave errors
+- Be aware of 3rd party vulnerabilities. Vendors might have vulnerabilities you haven't considered.
+<h3>Assessment Systems</h3>
+- Basically run Network Recon. 
+	- Start with **NIST SP 800-115** 3 principlals
+		- Test to discover vulnerabilities or prove effectiveness of controls
+		- Examine objects to understand system and identify logical weaknesses
+		- Interview people to probe attitude and understanding
+- Vulnerability Scanners test systems and visualize results. Will typically list missing patches, deviations from baseline and other issues.
+	- Tenable Nessus or OpenVAS are options that look for common issues and vulnerabilities
+- Feeds for vulnerability information can be used to inform on new vulnerabilities
+	- **Security Content Automation Protocol (SCAP)** is the feed communication protocol
+	- **Common Vulnerabilities and Exposures (CVEs)** is a common vulnerability dictionary.
+		- Format: **CVE-YYYY-#### + description + reference URLs + entry date**
+		- Graded on danger
+			- 0-4 : Low
+			- 4-7: Medium
+			- 7-9: High
+			- 9+: Critical
+- Intrusive scanning vs Nonintrusive is about how actively the scanner is poking the system. Passive looks for existing traffic, where Active sends traffic. The difference is detectability (ie active vs passive sonar)
+- Credentialled vs noncredentialled is about whether the scanner can be logged into the system before hand. The idea is that outsiders should have less privileges than internal users.
+- Configurations should be reviewed for versions with known vulnerabilities.
+	- Open Vulnerability and Assessment Language - XML-based description of system security/setting information and known vulnerabilities
+	- Extensible Configuration Checklist Description Format (XCCDF) - XML-based machine readable best practices guide
+- Threat Hunting projects are an assessment that uses intelligence about current threats from feeds to audit and improve security posture.
+	- Advisories and bulletins inform
+	- Intelligence fusion uses internal logs with outside intelligence to identify what patterns are emerging
+	- Maneuver is the expectation that attackers will change tactics when detected
+<h3>Pentests</h3>
+- Test Type
+	- Black Box - no internal information, simulates external attack
+	- White Box - internal access
+	- Gray Box - partial internal access
+- Teams
+	- Red - Attack
+	- Blue - Defense
+	- White - referees
