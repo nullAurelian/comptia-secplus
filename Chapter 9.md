@@ -93,4 +93,13 @@ DDoS attacks typically work on flooding a target with SYN or Network Time Protoc
 	- Load balancer strategies vary. Strategies are also known as schedules. Simple = Round Robin/Queue. More complex methods take into account number of active connections or response time or manual weighting by a human administrator.
 		- Sessions might need to be tied to a particular node in a server. Traffic might be tied to source IP or a session affinity (aka ID number) to ensure network traffic goes to the correct node.
 		- Applications can use persistence/cookies to ensure that traffic stays to a node.
+	- Clustering is an addition to Load Balancing - clusters are groups of redundant nodes that share information. To the outside they appear as one device.
+		- If a node fails the traffic can be diverted to another node in the cluster as failover.
+		- The key to making multiple nodes look like one is Virtual IP addresses. All nodes in a cluster have a private network connection to each other with another network device acting as a front with the "real" ip.
+		- Cluster nodes are either Active/Passive or Active/Active. 
+			- Active/Passive = 1 "main node" that is online and any number of passive nodes that act as failover. Better performance during failover, but more expensive - it's just having spare computers.
+			- Active/Active = all nodes in the cluster are in use at the same time with failover shifting load to the other nodes. More efficient when everything works but worse performance when failover occurs.
+- Quality of Service is the framework for prioritizing traffic based on characteristics. Some applications have minimum requirements to work (ie voice or video chat). 
+	- Latency - time for packets to travel to destination
+	- Jitter - variation in latency
 Embedded systems are also vulnerable to attacks - attacks that target them are known as operational attacks. Think how hacking looks like in anime and TV shows; those are operational attacks.
