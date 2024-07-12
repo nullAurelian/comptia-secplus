@@ -101,5 +101,5 @@ DDoS attacks typically work on flooding a target with SYN or Network Time Protoc
 			- Active/Active = all nodes in the cluster are in use at the same time with failover shifting load to the other nodes. More efficient when everything works but worse performance when failover occurs.
 - Quality of Service is the framework for prioritizing traffic based on characteristics. Some applications have minimum requirements to work (ie voice or video chat). 
 	- Latency - time for packets to travel to destination
-	- Jitter - variation in latency
+	- Jitter - variation in latenc
 Embedded systems are also vulnerable to attacks - attacks that target them are known as operational attacks. Think how hacking looks like in anime and TV shows; those are operational attacks.

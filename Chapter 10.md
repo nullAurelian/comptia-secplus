@@ -1,0 +1,47 @@
+Network infrastructure design must include considerations for confidentiality, integrity and accessibility.
+- Firewalls
+	- At most basic are an access control list - who can use the network, when, how. Filters packets based on preconfigured rules that define types of data and behavior for that packet.
+		- Filter by IP, Protocol, Port
+		- Allow to pass, drop or some other action
+		- ACLs are stateless - they don't view the packet in a wider context and packets are analyzed individually.
+	- More advanced firewalls switch from stateless inspection to stateful inspection - they view all packets in the context of their related packets. 
+		- Checks packets against a state table to associate packets with each other (ie a file that is broken up into multiple packets). If not it is added and treated like a normal packet.
+		- Occurs at transport layer or application layer
+			- Transport layer establishes a session using TCP SYN/ACK to identify traffic. Legitimate traffic follows after a SYN -> SYN/ACK -> ACK sequence. Orphaned messages can be dropped as malicious or attempts to hijack an existing session.
+			- Application layer can check protocols and ports to ensure they match known values. It can also inspect the data within the packet and look for known malicious patterns.
+	- `iptables` is a command in Linux that acts as an equivalent to ACLs in other systems. It hosts functions to add, delete and replace rules.
+	- Firewalls can be deployed as stand-alone hardware at Layer 3 (Network) or Layer 2 (Data Link). Firewalls inspect packets based on what layer they are deployed on.
+		- Layer 3 checks when forwarding between subnets
+		- Layer 2 inspects when passing to another node
+		- Firewalls can also be deployed on individual hosts (Personal devices), applications (IE SQL) or on a network server.
+	- Firewalls may be implemented as a proxy or proxy server, using a store-and-forward system instead of simply passing or dropping packets that pass through it.
+		- Proxies disassemble a packet, analyze it, rebuild it and then send or drop it
+		- Forward Proxies: provide services for outbound packets only
+		- Reverse Proxies: provide services for inbound packets only
+		- Proxies can be transparent or non-transparent. 
+			- Transparent means the proxy can intercept traffic without the host being configured. Transparent proxies must be put on an inline network device as a result
+			- Non-transparent means that traffic uses a configured port and address (static)
+	- Network Address Translation is a system to allow multiple hosts to use the same public IP address while having individual private IP addresses.
+		- Static is a 1:1 mapping
+		- Overloaded uses ports to differentiate which device traffic is destined for
+		- Destination/Port Forward uses the router address to publish webservice, but forwards incoming requests to a designated DMZ port or LAN.
+	- Firewalls can be deployed as a virtual device when working with data centers or cloud services.
+		- Hypervisor: Firewall is part of the cloud provisioning tool/API
+		- Virtual Appliance: Vendor deploys firewall instance to the provided servers
+		- Multiple Context: A physical device is running multiple instances of a firewall with different rules based on traffic/client.
+- To supplement firewalls, Intrusion Detection Systems can be installed to check for unusual activity within a system or network.
+	- Network IDS are typically passive - raising alarms if detecting potential threats but not acting on the signature.
+	- Packet capture typically occurs inside a firewall or close to important infrastructure with the goal of identifying malicious traffic.
+		- Switch port analyzer/mirror - packet capture is attached to a port that receives copies of frames being sent to the ports you want to watch. Errored frames are dropped.
+		- Passive test access point (TAP) - basically an inline device to analyze packets. Does not know to drop errored packets.
+		- Active Test Access Point - like it's passive variant, it is an inline device to analyze packets, but ALSO can regenerate errored packets.
+	- Can look for signatures, patterns, abnormal behaviors to detect intrusions.
+	- Current trend of Unified Threat Management - every security device in a single box. 
+- Applications can have discrete firewalls themselves -  SQL servers for example, or Web Applications (Web Application Firewall =  WAF)
+- SIEM = Security Information and Event Management system. Unified Threat Management at a passive level. Pulls together logs and events to generate a visualization of the current security situation.
+	- Collect via agent service on host
+	- Collect by hosts pushing to SIEM server/dumping logs
+	- Sensors in the network
+	- Generates analytics
+		- User and Entity behavior: identifies malicious behavior from baseline comparison.
+		- Sentiment Analysis is checking for context in the greater industry ecosystem (ie social media) to identify potential motives for future attacks.
