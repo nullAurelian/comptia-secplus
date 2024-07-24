@@ -1,0 +1,84 @@
+- Log everything!
+Common attacks:
+- Privilege escalations to allow execution of code
+	- Vertical: gain admin rights on the target machine
+	- Horizontal: gain admin rights piggybacking off another legitimate user
+- Error handling: depending on how the program handles unexpected inputs it may be vulnerable to attacks. Error messages should not reveal anything that an attacker can use ie stacktraces that reveal internal configuration.
+	- A subtype is Null Pointer Dereference -  where memory allocation is invalid or null causing a crash in C/C++ applications.
+- Overflows of input fields and data manipulation
+	- Abusing data to overfill the buffer/stack to push data that is normally in protected address blocks into unprotected sectors
+	- Integer overflow is another form of this
+	- Race condition isn't strictly an overflow, but is a case where the execution of a process in an out of order manner (typically due to certain inputs) causes the program to execute incorrectly.
+		- Subtype is Time to Check to Time of Use (TOCTTOU). This attack identifies a temporary file used by the program and replaces it with a malicious version in the time between the file's creation and its actual use.
+	- Memory leaks are when a system fails to release memory chunks after use. This not only impacts performance but also leaves residual data.
+	- Drivers and Dynamic Link Libraries (.dll) are also vulnerable to be swapped for hostile versions. These have to be operated with sufficient privileges and evade detection.
+- Lateral movement should also be a concern, insist on everyone updating as soon as possible.
+	- Attacks that use lateral movement include Pass the Hash, in which a vulnerable computer has it's sign-in hash stolen and reused by an attacker.
+Attacks may come from the Web via your own application interfaces.
+- URL shortening or URL encoding: typical of phishing to hide malicious sites behind a name that has been altered to disguise it's true identity.
+- Use of HTTP methods and unsecured pages to POST, PUT malicious scripts.
+	- HEAD is sometimes used for recon to retrieve headers for a resource.
+- API calls should be protected behind a secure line/encrypted connection (HTTPS). Plain HTTP may be impersonated or modified because they are sent as plaintext. 
+	- HTTP might reveal:
+		- Secret Keys
+		- Error messages
+		- Internal structures
+	- Sanitize your inputs
+	- Encrypt cookies
+- Ensure that each message has a connected session with a client. Attackers may capture packets and replay them to gain access to re-establish a connection that as lapsed.
+	- Sessions might be hijacked (replay of cookies to impersonate an existing session).
+		- Cross-site Request Forgery is a version of hijacking that abuses assumptions that a connection from a previously authenticated client is always valid. Attackers might steal cookies while the target is still signed in and makes requests using cookies from existing connections.
+			- Prevention: Cookies can only be associated with one session/connection at a time. If more than one session is open with a single cookie, both should be terminated.
+		- Clickjacking is an attack where attackers overlay a hostile frame over a site to intercept or redirect user input.
+			- Prevention: No arbitrary code execution, prevent browsers from opening frames from origins that you don't recognize. Buttons and interactable objects should always go at the top layer of the page.
+		- SSL strip: proxies the response from a request through a previously compromised gateway. Information is captured via a forced HTTP request.
+			- Prevention: Force HTTPS and HTTP Strict Transport Security lists to prevent HTTP requests.
+	- Cross-Site Scripting (XSS) exploits trust a browser has from scripts that come from a page the user has chosen to visit. The XSS is added as a part of the site by adding an argument to the URL to load a script from another location.
+		- Might be done by injecting code via poor validation input
+		- Might be hooked into via API
+		- Might be hooked into browser client vulnerabilities by use Document Object Model to modify a webpage.
+		- injected by SQL, XML or LDAP to attack content on the webserver
+			- A poorly set permissions structure might allow attackers to attempt to directly access directories they should not have. Commands may also be run using the same vulnerabilities.
+		- Server-side Request Forgery (SSRF) uses the webserver interface to run a command on the supporting backend rather than directly from the attacker client. 
+			- Targets:
+				- Recon
+				- Credentials
+				- Unauthorized requests
+				- Protocol Smuggling - attempt to request SMTP or FTP requests over HTTP
+		- Prevention: VALIDATE INPUTS. Normalization of inputs and outputs forces results to be put into a version that is safe for system use.
+- When reusing code, keep alert. New context may have new threats. Third-party libraries or SDKs are also vulnerable since they are outside your supply chain and should be monitored for issues.
+	- Stored scripts or procedures should also be disabled unless necessary.
+	- Code that is no longer used or otherwise dead should be removed in case someone manages to access it.
+- When developing new code, perform code analysis:
+	- Static: code at rest, if there are any obvious bugs or issues
+	- Dynamic: code in execution.
+		- Fuzzing: testing via mass input of invalid values or records.
+			- test input boxes, command line arguments or import/export functions
+			- test direct input via protocol, altered headers
+			- test file formats not normally associated with the input
+		- Stress test: how much bullshit the program can deal with
+Secure your execution environments:
+- Common scripting language compilers are common targets
+	- Python
+	- Powershell
+	- Bash
+	- Visual Basic for Applications (VBA)
+- Set lists to specifically Allow or Block executions. 
+	- Allow Lists/Whitelists are more restrictive but have a higher overhead for management, Block Lists/Blacklists are more permissive but also more vulnerable.
+	- Code signing is a major method of ensuring authenticity and integrity of code
+- Behaviors to check for malicious code
+	- Shellcode/shell access script: Bash, Powershell are common targets
+		- Powershell commands (aka cmdlets) may attempt to run programs via `Invoke-` typed commands in conjunctions with download  arguments.
+		- Bypassing execution policy via arguments
+		- Calling Windows API /.dll files directly
+	- Credential dump
+	- Execution of processes on other servers
+	- Persistence: autoruns and scheduled tasks can create persistence
+Secure multiple systems via central configuration and automation
+- Scalability: ability to increase or decrease support without a direct impact on effort to do so.
+- Elasticity: ability to handle changes on demand
+- Provisioning/Deprovisioning is the deployment or removal of a applications to target environment.
+- Version control
+- Software diversity: obfuscation of API methods or automation code
+- CI/CD
+	- Development -> Test/Integration (unit testing) -> Staging (user testing) -> Prod
