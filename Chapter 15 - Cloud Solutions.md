@@ -1,0 +1,66 @@
+Cloud Solutions typically a "X as a Service" or `XaaS`. This can range from Software, Infrastructure, Platforms, Security.
+- Security as a service can take multiple forms
+	- Consultants
+	- Managed Security Services Providers (MSSP) - full outsourcing of information assurance. Good for fast growth.
+	- Security as a Service (SECaaS) - outsourcing of a single aspect of a security suite, ie Virus Scanner or SIEM.
+Other Cloud Solutions may involve virtual machines, virtual desktops or hypervisor technologies. The clients outsource the processing work from the local machine to a cloud server.
+- Applications may also be virtualized, using cloud servers to run a specific application within defined resources
+- Virtual Desktop Infrastructure (VDI) is a VM as a means to provision desktops. User connects via remote desktop protocol to a cloud server.
+- Virtual Desktop Environment (VDE) is a fully remote system. Think the mini-machines in some computer labs.
+- Hypervisor types
+	- Type 1: Sites on the host and has direct access to the hardware.
+	- Type 2: An application that is installed on a host and accesses resources via OS API
+Virtualized aspects run the risk of jumping or VM escaping to access the cloud host's resources to interact with other containers.
+- Attackers accessing cloud host resources may allow theft of data or lateral movement to other VMs.
+- VMs should be treated like any other network host, with local protections and documentation to avoid sprawl.
+	- VMs should have a defined lifecycle including deployment, maintenance, monitoring and teardown.
+Cloud services work by transferring risks, but users may still be liable for serious security breaches. Clouds are uniquely vulnerable to certain issues.
+- Application Security and Identity and Access Management
+- Secrets Management: secret keys have to transmitted constantly for cloud access
+- Container Security: hosted services typically have multiple containers/virtual systems on the same physical hardware.
+- API Inspection and Integration: On top of application API, cloud hosts have their own API. Both need to be accounted for and protected.
+- Instance Awareness/Instance Management to avoid sprawl.
+- Resources should still have permissions policies applied to them on a cloud system. Resources typically have an associated JSON that indicates permissions.
+	- Resources on cloud systems should still be encrypted, and VMs/containers should have the key for their specific storage section provisioned on creation and deleted on teardown. Communication between virtual devices, even on the same host hardware, should be encrypted as HTTPS or IPSec.
+	- Clouds should be used as Virtual Private Clouds - essentially isolating connections between clouds belonging to the same customer from the wider public (basically VPN between VMs).
+		- Might be routed with a transit gateway, or virtual router that handles routing between subnets in the connected VPCs.
+- Cloud benefits from high availability stemming from the ability to replicate data and machines on to new hardware. How frequently the data is replicated ties to the Availability leg of the CIA triad.
+	- Some regions have different availability based on if they have a regional datacenter or not. Serving clients around the world, having data come from a local data center to the client improves availability. 
+		- Local replication: replicates data to another device in the same data center
+		- Regional replication: replicates data to another data center within the region
+		- Geo-redundant replication: falls back to a secondary region away from the primary region
+- Cloud security should be managed by a Cloud Access Security Broker. 
+	- They enable SSO and enforce access Controls for the cloud
+	- Scan for malware and non-compliant devices
+	- Monitor and audit user and resources
+	- Enabled as:
+		- Forward Proxy: for cases where monitoring needs to be done on incoming traffic, look for attacks from outside. **Poor performance**
+		- Reverse Proxy: for cases where monitoring needs to be done on the inside.
+		- API: cases where traffic from multiple clients need to be checked
+Services and microservices are an aspect of virtualization where applications are put onto containers and provisioned as needed.
+- Service-Oriented Architecture: the idea of mapping atomic services to business workflows. Services are an interface in this concept - black-boxing functions to be used by clients at-will without having incompatibilities in infrastructure or with other applications.
+- Microservices
+- Services Integration and Orchestration: 
+	- Orchestration is the act of chaining multiple microservices to make a full workflow for an automated task.
+- Infrastructure as Code uses scripts to allow cloud servers to emulate Infrastructure systems. The goal of doing so is to reduce the number of unique hardware systems in a cloud for ease of management.
+	- Rejecting manual configuration, IaC ensures idempotence: making the same call with the same parameters will always produce the same result.
+	- IaC is split into 3 'planes' of management
+		- Control: prioritizes what data has traffic and security, where it should be sent
+		- Data: handles the actual switching and routing
+		- Management: monitors traffic conditions and network status
+	- IaC uses Software-Defined Networking(SDN) to define policy decisions at the control plane - that the code acts as a router or switch to decide where packets will go.
+		- SDN app -> SDN controller is "northbound"
+		- SDN app <- SDN controller is "southbound"
+		- Machines running SDN need to be visible to the controlling software so that they can manage the hardware. This is known as Software-Defined Visibility (SDV) and assists in data collection.
+- Some applications and services need to be close in proximity while being part of a cloud network. This is known as Edge or Fog computing.
+	- Good for IoT applications, local system control and use Wi-Fi, Zigbee, 5G and other wireless communications.
+In summary, a guideline for implementing cloud solutions:
+- Assess requirements for Confidentiality, Integrity and Availability of cloud solutions.
+- Identify provisioning model (What do you need as a service: Software, platform or infrastructure).
+	- Consider advanced concepts: 
+		- Microservices
+		- Infrastructure as Code, Software Defined Networking, Software Defined Visibility for automation of provisioning
+		- Edge or Fog Computing options vs Cloud servers
+- Ensure agreements with providers to ensure uptime, Service Levels and security responsibility. Who is doing what critical maintenance and monitoring.
+- If working with on-premise or in-house solutions, ensure best practices for developing and deploying virtual machines or hypervisors
+- Secure/configure native or third-party security controls, create systems for replication/backup along with isolation of workflows.
